@@ -51,12 +51,16 @@ class Predictor(BasePredictor):
             ],
             description="Select a Module",
         ),
-        prompt: str = Input(description="Input prompt", default="masterpiece, best quality, 1girl, solo, cherry blossoms, hanami, pink flower, white flower, spring season, wisteria, petals, flower, plum blossoms, outdoors, falling petals, white hair, black eyes"),
+        prompt_map: str = Input(
+            description="Newline-separated list of prompts with key frames. Each line should start with a key frame number followed by a colon and a space, then the prompt for that keyframe. Ensure the video length is no more than the last prompt in prompt_map.",
+            default="0: smile standing,((spider webs:1.0))\n4: (((walking))),((spider webs:1.0))\n8: (((running))),((spider webs:2.0)),wide angle lens, fish eye effect\n12: (((sitting))),((spider webs:1.0))"
+        ),
         n_prompt: str = Input(description="Negative prompt", default=""),
         steps: int = Input(description="Number of inference steps", ge=1, le=100, default=25),
         guidance_scale: float = Input(description="guidance scale", ge=1, le=10, default=7.5),
         seed: int = Input(description="Seed (0 = random, maximum: 2147483647)", default=42),
         video_length: int = Input(description="Number of frames to generate", default=16),
+        context_frames: int = Input(description="Number of context frames to use", default=4),
     ) -> Path:
         """Run a single prediction on the model"""
         lora_alpha=0.8
@@ -129,6 +133,10 @@ class Predictor(BasePredictor):
         outpath = f"./{outname}"
         out_path = Path(tempfile.mkdtemp()) / "out.mp4"
 
+        prompt = "filler text goes here"
+        prompt_map = {
+            int(k): v for k, v in (item.split(": ") for item in prompt_map.split("\n"))
+        }
         sample = self.pipeline(
             prompt,
             negative_prompt     = n_prompt,
@@ -137,6 +145,8 @@ class Predictor(BasePredictor):
             width               = 512,
             height              = 512,
             video_length        = video_length,
+            prompt_map          = prompt_map,
+            context_frames      = context_frames,
         ).videos
 
         samples = torch.concat([sample])
