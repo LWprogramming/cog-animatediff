@@ -55,7 +55,8 @@ class Predictor(BasePredictor):
         n_prompt: str = Input(description="Negative prompt", default=""),
         steps: int = Input(description="Number of inference steps", ge=1, le=100, default=25),
         guidance_scale: float = Input(description="guidance scale", ge=1, le=10, default=7.5),
-        seed: int = Input(description="Seed (0 = random, maximum: 2147483647)", default=None),
+        seed: int = Input(description="Seed (0 = random, maximum: 2147483647)", default=42),
+        video_length: int = Input(description="Number of frames to generate", default=16),
     ) -> Path:
         """Run a single prediction on the model"""
         lora_alpha=0.8
@@ -135,7 +136,7 @@ class Predictor(BasePredictor):
             guidance_scale      = guidance_scale,
             width               = 512,
             height              = 512,
-            video_length        = 16,
+            video_length        = video_length,
         ).videos
 
         samples = torch.concat([sample])
