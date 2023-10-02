@@ -24,7 +24,7 @@ from diffusers.utils.import_utils import is_xformers_available
 class Predictor(BasePredictor):
     def setup(self) -> None:
         """Load the model into memory to make running multiple predictions efficient"""
-        pretrained_model_path = "/AnimateDiff/models/StableDiffusion/stable-diffusion-v1-5"
+        pretrained_model_path = "./models/StableDiffusion/stable-diffusion-v1-5"
         self.tokenizer = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer")
         self.text_encoder = CLIPTextModel.from_pretrained(pretrained_model_path, subfolder="text_encoder")
         self.vae = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae")
@@ -67,16 +67,16 @@ class Predictor(BasePredictor):
         base=""
         # Create paths and load motion model
         newPath = "models/DreamBooth_LoRA/"+path
-        motion_path = "/AnimateDiff/models/Motion_Module/"+motion_module+".ckpt"
+        motion_path = "./models/Motion_Module/"+motion_module+".ckpt"
         # Support new v2 motion module
         if motion_module.endswith("v2"):
-            inference_config_file = "/AnimateDiff/configs/inference/inference-v2.yaml"
+            inference_config_file = "./configs/inference/inference-v2.yaml"
         else:
-            inference_config_file = "/AnimateDiff/configs/inference/inference-v1.yaml"
+            inference_config_file = "./configs/inference/inference-v1.yaml"
         # Load configuration
         inference_config = OmegaConf.load(inference_config_file)
         self.unet = UNet3DConditionModel.from_pretrained_2d(
-            "/AnimateDiff/models/StableDiffusion/stable-diffusion-v1-5",
+            "./models/StableDiffusion/stable-diffusion-v1-5",
             subfolder="unet",
             unet_additional_kwargs=OmegaConf.to_container(inference_config.unet_additional_kwargs)
         )
@@ -91,7 +91,7 @@ class Predictor(BasePredictor):
         assert len(unexpected) == 0
 
         if path != "":
-            fullPath = "/AnimateDiff/"+newPath
+            fullPath = "./"+newPath
             if path.endswith(".ckpt"):
                 state_dict = torch.load(fullPath)
                 self.unet.load_state_dict(state_dict)

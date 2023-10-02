@@ -20,6 +20,5 @@ build:
   - pip install xformers
   - git clone https://github.com/LWProgramming/AnimateDiff /AnimateDiff
   - apt-get update && apt-get install -y ffmpeg
-  - cp -r models/* /AnimateDiff/models
 
 predict: "predict.py:Predictor"
