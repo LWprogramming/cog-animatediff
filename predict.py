@@ -70,9 +70,9 @@ class Predictor(BasePredictor):
         motion_path = "./models/Motion_Module/"+motion_module+".ckpt"
         # Support new v2 motion module
         if motion_module.endswith("v2"):
-            inference_config_file = "./configs/inference/inference-v2.yaml"
+            inference_config_file = "/AnimateDiff/configs/inference/inference-v2.yaml"
         else:
-            inference_config_file = "./configs/inference/inference-v1.yaml"
+            inference_config_file = "/AnimateDiff/configs/inference/inference-v1.yaml"
         # Load configuration
         inference_config = OmegaConf.load(inference_config_file)
         self.unet = UNet3DConditionModel.from_pretrained_2d(
