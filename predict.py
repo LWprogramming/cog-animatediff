@@ -128,7 +128,7 @@ class Predictor(BasePredictor):
         print(f"Using seed: {seed}")
         torch.manual_seed(seed)
 
-        print(f"sampling: {prompt} ...")
+        # print(f"sampling: {prompt} ...")
         outname = "output.gif"
         outpath = f"./{outname}"
         out_path = Path(tempfile.mkdtemp()) / "out.mp4"
